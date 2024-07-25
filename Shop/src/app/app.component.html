@@ -1,0 +1,94 @@
+<style>
+    :host {
+        --bright-blue: oklch(51.01% 0.274 263.83);
+        --electric-violet: oklch(53.18% 0.28 296.97);
+        --french-violet: oklch(47.66% 0.246 305.88);
+        --vivid-pink: oklch(69.02% 0.277 332.77);
+        --hot-red: oklch(61.42% 0.238 15.34);
+        --orange-red: oklch(63.32% 0.24 31.68);
+        --gray-900: oklch(19.37% 0.006 300.98);
+        --gray-700: oklch(36.98% 0.014 302.71);
+        --gray-400: oklch(70.9% 0.015 304.04);
+        --red-to-pink-to-purple-vertical-gradient: linear-gradient( 180deg, var(--orange-red) 0%, var(--vivid-pink) 50%, var(--electric-violet) 100% );
+        --red-to-pink-to-purple-horizontal-gradient: linear-gradient( 90deg, var(--orange-red) 0%, var(--vivid-pink) 50%, var(--electric-violet) 100% );
+        --pill-accent: var(--bright-blue);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+</style>
+<main class="main">
+    <form [formGroup]="pizzaForm" (ngSubmit)="onSubmit()">
+        <table>
+            <tr>
+                <td><h1>{{title}}</h1></td>
+            </tr>
+            <tr><td colspan="2"><h2>The Pizza Generator:</h2></td></tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td><label for="pizzaDescription">Description*: </label></td>
+                            <td colspan="2">
+                                <input id="pizzaDescription" placeholder="Description*" type="text" formControlName="pizzaDescription">
+                                <span class="text-danger" *ngIf="pizzaDescription?.errors?.['required']">
+                                    Description is required!
+                                </span>
+                                <span class="text-danger" *ngIf="pizzaDescription?.errors?.['maxLength']">
+                                    The Description is to long!
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="pizzaDiameter">Diameter*: </label></td>
+                            <td colspan="2">
+                                <input id="pizzaDiameter" placeholder="Diameter*" type="number" formControlName="pizzaDiameter"> cm
+                                <span class="text-danger" *ngIf="pizzaDiameter?.errors?.['required']">
+                                    Diameter is requered and must be between 20-40 cm!
+                                </span>
+                                <span class="text-danger" *ngIf="pizzaDiameter?.errors?.['min']">
+                                    Diameter must be at least 20 cm!
+                                </span>
+                                <span class="text-danger" *ngIf="pizzaDiameter?.errors?.['max']">
+                                    Diameter imust be max 40 cm!
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="pizzaBakingTime">Baking Time: </label></td>
+                            <td colspan="2">
+                                <input id="pizzaBakingTime" placeholder="Baking Time" type="number" step="0.1" formControlName="pizzaBakingTime"> min
+                                <span class="text-danger" *ngIf="pizzaBakingTime?.errors?.['min']">
+                                    The Baking time must be min 0.1 min!
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table>
+                        <tr><td><h2>The Toppings:</h2></td></tr>
+                        <tr formArrayName="toppings">
+                            <td *ngFor="let topping of toppings.controls; let i = index">
+                                <button type="button" (click)="removeItem(i)">Delete topping</button>
+                                <input formControlName="i" placeholder="Enter Topping" />
+                                <span class="text-danger" *ngIf="topping.errors?.['max']">
+                                    Description is to long!
+                                </span>
+                                <span class="text-danger" *ngIf="topping.errors?.['required']">
+                                    Description is required!
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><button type="button" (click)="addItem()">+ Add topping</button></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td><button id="submitButton" type="submit" [disabled]="pizzaForm.invalid">Submit Pizza</button></td></tr>
+        </table>
+    </form>
+</main>
+<router-outlet />
