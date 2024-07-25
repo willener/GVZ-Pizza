@@ -1,0 +1,39 @@
+﻿See IMT Wiki OneNote: "Database Migration .NET Core"
+
+When Migrating from .NET 4.x:
+1. Delete:
+- [Entity].cs (keep [Entity].Custom.cs)
+- EafDataConfiguration.cs
+- EafDataModel.Context.cs
+- EafDataModel.Context.tt
+- EafDataModel.cs
+- EafDataModel.Designer.cs
+- EafDataModel.edmx
+- EafDataModel.edmx.diagram
+- EafDataModel.tt
+2. Make all projects buildable
+   (Change build action from failing classes temporary from "C# compiler" to "None")
+
+Generate Model:
+1. Set project Custom.Model.Database as startup projekt
+2. Start Tools | NuGet Package Manager | Package Manager Console
+3. Run the following command
+   ImtDemoEafData:
+   Scaffold-DbContext "Server=.;Database=PizzaShop;Trusted_Connection=True;Encrypt=False" Microsoft.EntityFrameworkCore.SqlServer -Project Custom.Database -OutputDir Data -ContextDir Data -Context DataEntities -UseDatabaseNames -Force -NoPluralize -NoOnConfiguring
+   
+Hints:
+- If output is "Build failed.": Copy Solution as Custom.Model.Database.sln and remove all projects which are not referenced by Custom.Model.Database
+- EF7: Scaffold-DbContext ... -NoOnConfiguring:
+  Prevents generating "partial void OnModelCreatingPartial()..." which is containing the default connection string.
+  If it exists, the default connection string is used automatically instead of DatabaseItemConfig!
+
+Output:
+Build started...
+Build succeeded.
+
+To protect potentially sensitive information in your connection string, you should move it out of source code.
+You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148.
+For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+
+The column 'dbo.Parameter.IsActive' would normally be mapped to a non-nullable bool property, but it has a default constraint. Such a column is mapped to a nullable bool property
+to allow a difference between setting the property to false and invoking the default constraint. See https://go.microsoft.com/fwlink/?linkid=851278 for details.
